@@ -22,9 +22,9 @@ documentation{
     F{{client}} HTTP Client used in Gmail connector
 }
 public type GmailConnector object {
-    public {
-        http:Client client;
-    }
+
+    public http:Client client;
+
 
     documentation{
         List the messages in user's mailbox.
@@ -379,7 +379,7 @@ public type GmailConnector object {
     public function sendDraft(string userId, string draftId) returns (string, string)|GmailError;
 };
 
-public function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ())
+function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ())
                                                                                     returns MessageListPage|GmailError {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
@@ -411,7 +411,7 @@ public function GmailConnector::listMessages(string userId, MsgSearchFilter? fil
     return convertJSONToMessageListPageType(jsonlistMsgResponse);
 }
 
-public function GmailConnector::sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
+function GmailConnector::sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
                                                                                            (string, string)|GmailError {
     endpoint http:Client httpClient = self.client;
     //Create the whole message as an encoded raw string. If unsuccessful throws and returns GmailError.
@@ -432,7 +432,7 @@ public function GmailConnector::sendMessage(string userId, MessageRequest messag
     return (jsonSendMessageResponse.id.toString(), jsonSendMessageResponse.threadId.toString());
 }
 
-public function GmailConnector::readMessage(string userId, string messageId, string? format = (),
+function GmailConnector::readMessage(string userId, string messageId, string? format = (),
                                             string[]? metadataHeaders = ()) returns Message|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
@@ -458,7 +458,7 @@ public function GmailConnector::readMessage(string userId, string messageId, str
     return convertJSONToMessageType(jsonreadMessageResponse);
 }
 
-public function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
+function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
                                                                                     returns MessageBodyPart|GmailError {
     endpoint http:Client httpClient = self.client;
     string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
@@ -470,7 +470,7 @@ public function GmailConnector::getAttachment(string userId, string messageId, s
     return convertJSONToMsgBodyAttachment(jsonAttachment);
 }
 
-public function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
@@ -482,7 +482,7 @@ public function GmailConnector::trashMessage(string userId, string messageId) re
     return jsonTrashMessageResponse.id.toString() == messageId;
 }
 
-public function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
@@ -494,7 +494,7 @@ public function GmailConnector::untrashMessage(string userId, string messageId) 
     return jsonUntrashMessageReponse.id.toString() == messageId;
 }
 
-public function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
@@ -503,7 +503,7 @@ public function GmailConnector::deleteMessage(string userId, string messageId) r
     return <boolean>check handleResponse(httpResponse);
 }
 
-public function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ())
+function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ())
                                                                                      returns ThreadListPage|GmailError {
     endpoint http:Client httpClient = self.client;
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
@@ -535,7 +535,7 @@ public function GmailConnector::listThreads(string userId, MsgSearchFilter? filt
     return convertJSONToThreadListPageType(jsonListThreadResponse);
 }
 
-public function GmailConnector::readThread(string userId, string threadId, string? format = (),
+function GmailConnector::readThread(string userId, string threadId, string? format = (),
                                            string[]? metadataHeaders = ()) returns Thread|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
@@ -559,7 +559,7 @@ public function GmailConnector::readThread(string userId, string threadId, strin
     return convertJSONToThreadType(jsonReadThreadResponse);
 }
 
-public function GmailConnector::trashThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::trashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
@@ -571,7 +571,7 @@ public function GmailConnector::trashThread(string userId, string threadId) retu
     return jsonTrashThreadResponse.id.toString() == threadId;
 }
 
-public function GmailConnector::untrashThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::untrashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
@@ -583,7 +583,7 @@ public function GmailConnector::untrashThread(string userId, string threadId) re
     return jsonUntrashThreadResponse.id.toString() == threadId;
 }
 
-public function GmailConnector::deleteThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::deleteThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
@@ -592,7 +592,7 @@ public function GmailConnector::deleteThread(string userId, string threadId) ret
     return <boolean>check handleResponse(httpResponse);
 }
 
-public function GmailConnector::getUserProfile(string userId) returns UserProfile|GmailError {
+function GmailConnector::getUserProfile(string userId) returns UserProfile|GmailError {
     endpoint http:Client httpClient = self.client;
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
     var httpResponse = httpClient->get(getProfilePath);
@@ -602,7 +602,7 @@ public function GmailConnector::getUserProfile(string userId) returns UserProfil
     return convertJSONToUserProfileType(jsonProfileResponse);
 }
 
-public function GmailConnector::getLabel(string userId, string labelId) returns Label|GmailError {
+function GmailConnector::getLabel(string userId, string labelId) returns Label|GmailError {
     endpoint http:Client httpClient = self.client;
     string getLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     var httpResponse = httpClient->get(getLabelPath);
@@ -612,7 +612,7 @@ public function GmailConnector::getLabel(string userId, string labelId) returns 
     return convertJSONToLabelType(jsonGetLabelResponse);
 }
 
-public function GmailConnector::createLabel(string userId, string name, string labelListVisibility,
+function GmailConnector::createLabel(string userId, string name, string labelListVisibility,
                                             string messageListVisibility, string? backgroundColor = (),
                                             string? textColor = ()) returns string|GmailError {
     endpoint http:Client httpClient = self.client;
@@ -634,7 +634,7 @@ public function GmailConnector::createLabel(string userId, string name, string l
     return jsonCreateLabelResponse.id.toString();
 }
 
-public function GmailConnector::listLabels(string userId) returns Label[]|GmailError {
+function GmailConnector::listLabels(string userId) returns Label[]|GmailError {
     endpoint http:Client httpClient = self.client;
     string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
     var httpResponse = httpClient->get(listLabelsPath);
@@ -643,7 +643,7 @@ public function GmailConnector::listLabels(string userId) returns Label[]|GmailE
     return convertJSONToLabelTypeList(jsonLabelListResponse);
 }
 
-public function GmailConnector::deleteLabel(string userId, string labelId) returns boolean|GmailError {
+function GmailConnector::deleteLabel(string userId, string labelId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
@@ -652,7 +652,7 @@ public function GmailConnector::deleteLabel(string userId, string labelId) retur
     return <boolean>check handleResponse(httpResponse);
 }
 
-public function GmailConnector::updateLabel(string userId, string labelId, string? name = (),
+function GmailConnector::updateLabel(string userId, string labelId, string? name = (),
                                             string? messageListVisibility = (), string? labelListVisibility = (),
                                             string? backgroundColor = (), string? textColor = ())
                                             returns Label|GmailError {
@@ -686,7 +686,7 @@ public function GmailConnector::updateLabel(string userId, string labelId, strin
     return convertJSONToLabelType(jsonUpdateResponse);
 }
 
-public function GmailConnector::modifyMessage(string userId, string messageId, string[] addLabelIds,
+function GmailConnector::modifyMessage(string userId, string messageId, string[] addLabelIds,
                                               string[] removeLabelIds) returns Message|GmailError {
     endpoint http:Client httpClient = self.client;
     string modifyMsgPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
@@ -707,7 +707,7 @@ public function GmailConnector::modifyMessage(string userId, string messageId, s
     return convertJSONToMessageType(check handleResponse(httpResponse));
 }
 
-public function GmailConnector::modifyThread(string userId, string threadId, string[] addLabelIds,
+function GmailConnector::modifyThread(string userId, string threadId, string[] addLabelIds,
                                              string[] removeLabelIds) returns Thread|GmailError {
     endpoint http:Client httpClient = self.client;
     string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
@@ -726,7 +726,7 @@ public function GmailConnector::modifyThread(string userId, string threadId, str
     return convertJSONToThreadType(check handleResponse(httpResponse));
 }
 
-public function GmailConnector::listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
+function GmailConnector::listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
                                             string? labelId = (), string? maxResults = (), string? pageToken = ())
                                             returns MailboxHistoryPage|GmailError {
     endpoint http:Client httpClient = self.client;
@@ -761,7 +761,7 @@ public function GmailConnector::listHistory(string userId, string startHistoryId
     return convertJSONToMailboxHistoryPage(jsonHistoryResponse);
 }
 
-public function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = ())
+function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = ())
                                                                                       returns DraftListPage|GmailError {
     endpoint http:Client httpClient = self.client;
     string getListDraftsPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
@@ -786,7 +786,7 @@ public function GmailConnector::listDrafts(string userId, DraftSearchFilter? fil
     return convertJSONToDraftListPageType(jsonListDraftResponse);
 }
 
-public function GmailConnector::readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError {
+function GmailConnector::readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     //Append format query parameter
@@ -802,7 +802,7 @@ public function GmailConnector::readDraft(string userId, string draftId, string?
     return convertJSONToDraftType(jsonReadDraftResponse);
 }
 
-public function GmailConnector::deleteDraft(string userId, string draftId) returns boolean|GmailError {
+function GmailConnector::deleteDraft(string userId, string draftId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
@@ -811,7 +811,7 @@ public function GmailConnector::deleteDraft(string userId, string draftId) retur
     return <boolean>check handleResponse(httpResponse);
 }
 
-public function GmailConnector::createDraft(string userId, MessageRequest message, string? threadId = ())
+function GmailConnector::createDraft(string userId, MessageRequest message, string? threadId = ())
                                                                                             returns string|GmailError {
     endpoint http:Client httpClient = self.client;
     string encodedRequest = check createEncodedRawMessage(message);
@@ -829,7 +829,7 @@ public function GmailConnector::createDraft(string userId, MessageRequest messag
     return jsonCreateDraftResponse.id.toString();
 }
 
-public function GmailConnector::updateDraft(string userId, string draftId, MessageRequest message,
+function GmailConnector::updateDraft(string userId, string draftId, MessageRequest message,
                                             string? threadId = ()) returns string|GmailError {
     endpoint http:Client httpClient = self.client;
     string encodedRequest = check createEncodedRawMessage(message);
@@ -847,7 +847,7 @@ public function GmailConnector::updateDraft(string userId, string draftId, Messa
     return jsonUpdateDraftResponse.id.toString();
 }
 
-public function GmailConnector::sendDraft(string userId, string draftId) returns (string, string)|GmailError {
+function GmailConnector::sendDraft(string userId, string draftId) returns (string, string)|GmailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     json jsonPayload = { id: draftId };
